@@ -8,3 +8,4 @@ _ Hệ thống User Input là 1 Joystick (Là 1 Singleton), khi start game, lấ
 - Ball sẽ phải move theo Direction Joystick của người chơi (Direction).
 - Tốc độ lăn của ball cũng sẽ bị ảnh hưởng bởi Direction của user.
 - Di chuyển nếu thông qua Update Loop thì loop sẽ phải là FixedUpdate (research để hiểu hơn tại sao dùng fixed update khi xử lí vật lí), time frame thì phải là fixedDeltaTime.
+- Camera sẽ di chuyển theo sau ball để có thể cảm nhận được góc nhìn thứ ba (Research: Third Person Character - Camera)
