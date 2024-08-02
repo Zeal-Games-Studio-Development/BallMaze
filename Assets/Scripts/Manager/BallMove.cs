@@ -9,7 +9,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class BallMove : MonoBehaviour
 {
     public static BallMove Instance;
-    public Rigidbody rd;
+    public Rigidbody rb;
 
     [SerializeField] private ForceMode forceMode;
     [SerializeField] private float moveSpeed;
@@ -18,24 +18,35 @@ public class BallMove : MonoBehaviour
     [SerializeField] private bool isGrounded;
     [SerializeField] private float rayDistance;
 
+    private bool isInput;
     private Vector3 oldCheckPoint;
+    private Stack<Vector3> checkPoints;
 
     private void Awake()
     {
         Instance = this;
         oldCheckPoint = transform.position;
+        isInput = false;
+        checkPoints = new Stack<Vector3>();
+        checkPoints.Push(oldCheckPoint);
         LoadScore();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isInput = true;
+        }
+
     }
 
     private void FixedUpdate()
     {
         Move();
-        OnGroud();
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            Jump();
-        }
-        ReturnCheckPoint();
+        OnGroud();     
+        Jump(isInput);
+        OnDrop();
     }
 
     private void Move()
@@ -55,17 +66,27 @@ public class BallMove : MonoBehaviour
         }
 
 
-        rd.AddForce(inputDirection * moveSpeed);
+        rb.AddForce(inputDirection * moveSpeed);
     }
 
+    public void Jump( bool getInput)
+    {
+        if (isGrounded && isInput)
+        {
+            rb.AddForce(Vector3.up * powerJump, forceMode);
+            isGrounded = false;
+            isInput = false;
+        }
+    }
     public void Jump()
     {
         if (isGrounded)
         {
-            rd.AddForce(Vector3.up * powerJump, forceMode);
-            isGrounded = false; 
+            rb.AddForce(Vector3.up * powerJump, forceMode);
+            isGrounded = false;
         }
     }
+
 
 
     private void OnTriggerEnter(Collider other)
@@ -74,7 +95,13 @@ public class BallMove : MonoBehaviour
         if (other.gameObject.tag == "Barrier")
         {
 
-            transform.position = oldCheckPoint;
+            ReturnCheckPoint();
+        }
+        else if(other.gameObject.tag == "CheckPoint")
+        {
+            Debug.Log("NEW CHECK POINT: " + transform.position);
+            UpdateCheckPoint(transform.position);
+            
         }
         else
         {
@@ -85,10 +112,6 @@ public class BallMove : MonoBehaviour
 
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        
-    }
 
 
     private void OnGroud()
@@ -107,12 +130,18 @@ public class BallMove : MonoBehaviour
 
     private void ReturnCheckPoint()
     {
-        if(transform.position.y <= -5)
+        transform.position = oldCheckPoint;
+
+        rb.velocity = Vector3.zero;
+
+    }
+
+    private void OnDrop()
+    {
+        if (transform.position.y <= -5)
         {
-            transform.position = oldCheckPoint;
-            rd.AddForce(Vector3.zero);
+            ReturnCheckPoint();
         }
-        
     }
 
     private void SaveScore()
@@ -131,6 +160,15 @@ public class BallMove : MonoBehaviour
         else
         {
             score = 0;
+        }
+    }
+
+
+    public void UpdateCheckPoint(Vector3 currentPoint)
+    {
+        if( Vector3.Distance(oldCheckPoint, currentPoint) >= 1)
+        {
+            oldCheckPoint = currentPoint;
         }
     }
 }
