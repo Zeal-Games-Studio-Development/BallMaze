@@ -5,6 +5,7 @@ using UnityEditor.Rendering;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.Experimental.GlobalIllumination;
+using ZealMVC.Runtime.Manager;
 
 public class BallMove : MonoBehaviour
 {
@@ -14,22 +15,27 @@ public class BallMove : MonoBehaviour
     [SerializeField] private ForceMode forceMode;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float powerJump;
-    [SerializeField] private int score;
+    [SerializeField] private IntValue _score;
     [SerializeField] private bool isGrounded;
     [SerializeField] private float rayDistance;
+    public Vector3 startPosision;
 
     private bool isInput;
     private Vector3 oldCheckPoint;
-    private Stack<Vector3> checkPoints;
+    
+
 
     private void Awake()
     {
         Instance = this;
         oldCheckPoint = transform.position;
         isInput = false;
-        checkPoints = new Stack<Vector3>();
-        checkPoints.Push(oldCheckPoint);
-        LoadScore();
+        
+    }
+    private void Start()
+    {
+        _score = DataContainer.Instance.Score;
+        _score.AddListener(OnScoreChanged);
     }
 
     private void Update()
@@ -105,9 +111,8 @@ public class BallMove : MonoBehaviour
         }
         else
         {
-            score++;
-            SaveScore();
-            Debug.Log("GET SCORE: " + score);
+            _score.Value ++;
+            Debug.Log("GET SCORE: " + _score.Value);
         }
 
     }
@@ -144,25 +149,6 @@ public class BallMove : MonoBehaviour
         }
     }
 
-    private void SaveScore()
-    {
-        PlayerPrefs.SetInt("PlayerScore", score); 
-        PlayerPrefs.Save(); 
-    }
-
-
-    public void LoadScore()
-    {
-        if (PlayerPrefs.HasKey("PlayerScore"))
-        {
-            score = PlayerPrefs.GetInt("PlayerScore");
-        }
-        else
-        {
-            score = 0;
-        }
-    }
-
 
     public void UpdateCheckPoint(Vector3 currentPoint)
     {
@@ -170,5 +156,15 @@ public class BallMove : MonoBehaviour
         {
             oldCheckPoint = currentPoint;
         }
+    }
+
+    public void OnScoreChanged(int score)
+    {
+        Debug.Log(score.ToString());  
+    }
+
+    private void OnDestroy()
+    {
+        _score.RemoveListener(OnScoreChanged);
     }
 }
