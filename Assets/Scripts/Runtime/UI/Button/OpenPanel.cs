@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class OpenPanel : BaseButton
 {
-    public GameObject panelMenu;
-    public GameObject panelUI;
+    public GameObject panelOpen;
+    public GameObject panelClose;
 
     protected override void OnClick()
     {
-        panelMenu.SetActive(true);
-        panelUI.SetActive(false);
+        panelOpen.SetActive(true);
+        panelClose.SetActive(false);
     }
 
 }

@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-using UnityEngine.Experimental.GlobalIllumination;
 using ZealMVC.Runtime.Manager;
 
 public class BallMove : MonoBehaviour
 {
     public static BallMove Instance;
     public Rigidbody rb;
+    public Vector3 startPosision;
+    public AudioSource audioSource;
 
     [SerializeField] private ForceMode forceMode;
     [SerializeField] private float moveSpeed;
@@ -17,7 +16,7 @@ public class BallMove : MonoBehaviour
     [SerializeField] private IntValue _score;
     [SerializeField] private bool isGrounded;
     [SerializeField] private float rayDistance;
-    public Vector3 startPosision;
+
 
     private bool isInput;
     private Vector3 oldCheckPoint;
@@ -29,7 +28,8 @@ public class BallMove : MonoBehaviour
         Instance = this;
         oldCheckPoint = transform.position;
         isInput = false;
-        
+
+
     }
     private void Start()
     {
@@ -42,6 +42,7 @@ public class BallMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isInput = true;
+            
         }
         
     }
@@ -92,8 +93,6 @@ public class BallMove : MonoBehaviour
         }
     }
 
-
-
     private void OnTriggerEnter(Collider other)
     {
 
@@ -108,6 +107,7 @@ public class BallMove : MonoBehaviour
         }
         else
         {
+            other.gameObject.SetActive(false);
             _score.Value ++;
             Debug.Log("GET SCORE: " + _score.Value);
         }
@@ -121,8 +121,14 @@ public class BallMove : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, rayDistance))
         {
+            
             Debug.DrawLine(transform.position, hit.point, Color.red);
+            if (!isGrounded)
+            {
+                audioSource.Play();
+            }
             isGrounded = true;
+            
         }
         else
         {
