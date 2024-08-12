@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class Exit : BaseButton
 {
-    public GameObject panel;
+    public GameObject panelMenu;
+    public GameObject panelUI;
     protected override void OnClick()
     {
-        panel.SetActive(false);
+        Debug.Log("Exit button clicked");
+        panelUI.SetActive(true);
+        panelMenu.SetActive(false);
+        
     }
 }

@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Barrier
   - CheckPoint
+  - Coin
+  - Floor
+  - Point
   layers:
   - Default
   - TransparentFX

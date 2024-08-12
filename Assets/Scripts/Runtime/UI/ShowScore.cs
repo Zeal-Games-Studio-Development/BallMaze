@@ -2,18 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
-
+using ZealMVC.Runtime.Manager;
 
 public class ShowScore : MonoBehaviour
 {
     public TextMeshProUGUI _txtScore;
-    private int _score;
+    private IntValue _score;
 
-    private void Update()
+
+    private void Start()
     {
-        
-        _score = PlayerPrefs.GetInt("PlayerScore");
-        _txtScore.text = "SCORE: " + _score.ToString();
+        _score = DataContainer.Instance.Score;
+        _txtScore.text = "SCORE: " + _score.Value.ToString();
+        _score.AddListener(OnScoreChanged);
     }
+
+    private void OnScoreChanged(int score)
+    {
+        _txtScore.text = "SCORE: " + _score.Value.ToString();
+    }
+
+    private void OnDestroy()
+    {
+        _score.RemoveListener(OnScoreChanged);
+    }
+
 }

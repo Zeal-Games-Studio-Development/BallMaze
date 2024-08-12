@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEditor.Rendering;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
@@ -22,7 +21,7 @@ public class BallMove : MonoBehaviour
 
     private bool isInput;
     private Vector3 oldCheckPoint;
-    
+    private Vector3 direction;
 
 
     private void Awake()
@@ -44,7 +43,7 @@ public class BallMove : MonoBehaviour
         {
             isInput = true;
         }
-
+        
     }
 
     private void FixedUpdate()
@@ -55,9 +54,9 @@ public class BallMove : MonoBehaviour
         OnDrop();
     }
 
-    private void Move()
+    public void Move()
     {
-        Vector3 direction = new Vector3(Joystick.Instance.Direction.x, 0, Joystick.Instance.Direction.y);
+        direction = new Vector3(Joystick.Instance.Direction.x, 0, Joystick.Instance.Direction.y);
         //transform.position += direction * moveSpeed * Time.fixedDeltaTime;
 
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -69,8 +68,8 @@ public class BallMove : MonoBehaviour
         if (inputDirection.magnitude > 1)
         {
             inputDirection.Normalize();
-        }
 
+        }
 
         rb.AddForce(inputDirection * moveSpeed);
     }
@@ -100,14 +99,12 @@ public class BallMove : MonoBehaviour
 
         if (other.gameObject.tag == "Barrier")
         {
-
             ReturnCheckPoint();
         }
         else if(other.gameObject.tag == "CheckPoint")
         {
             Debug.Log("NEW CHECK POINT: " + transform.position);
             UpdateCheckPoint(transform.position);
-            
         }
         else
         {
@@ -167,4 +164,6 @@ public class BallMove : MonoBehaviour
     {
         _score.RemoveListener(OnScoreChanged);
     }
+
+   
 }

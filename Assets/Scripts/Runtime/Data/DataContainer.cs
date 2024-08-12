@@ -17,8 +17,8 @@ namespace ZealMVC.Runtime.Manager
         public LevelValue LevelData;
 
         [Header("=== Game Settings ===")]
-        public BoolValue MusicSwitch;
-        public BoolValue SoundFXSwitch;
+        public FloatValue MusicSwitch;
+        public FloatValue SoundFXSwitch;
         public BoolValue VibrationSwitch;
     }
 }
