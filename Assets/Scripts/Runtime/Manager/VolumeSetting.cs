@@ -10,9 +10,10 @@ public class VolumeSetting : MonoBehaviour
     [SerializeField] private AudioMixer myMixer;
     [SerializeField] private Slider musicSlider;
 
-    private void Awake()
+    private void Start()
     {
         musicSlider.value = DataContainer.Instance.MusicSwitch.Value;
+        
     }
 
     public void SetMusicVolume()

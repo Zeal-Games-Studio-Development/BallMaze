@@ -26,15 +26,16 @@ public class BallMove : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        startPosision = transform.position; 
         oldCheckPoint = transform.position;
         isInput = false;
-
+        
 
     }
+
     private void Start()
     {
         _score = DataContainer.Instance.Score;
-        _score.AddListener(OnScoreChanged);
     }
 
     private void Update()
@@ -114,15 +115,21 @@ public class BallMove : MonoBehaviour
 
     }
 
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isGrounded)
+        {
+            audioSource.Play();
+        }
+    }
 
     private void OnGroud()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, rayDistance))
-        {
-            
+        { 
             Debug.DrawLine(transform.position, hit.point, Color.red);
+
             if (!isGrounded)
             {
                 audioSource.Play();
@@ -161,15 +168,4 @@ public class BallMove : MonoBehaviour
         }
     }
 
-    public void OnScoreChanged(int score)
-    {
-        Debug.Log(score.ToString());  
-    }
-
-    private void OnDestroy()
-    {
-        _score.RemoveListener(OnScoreChanged);
-    }
-
-   
 }
