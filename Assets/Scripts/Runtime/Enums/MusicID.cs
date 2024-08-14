@@ -2,8 +2,13 @@
 {
     public enum MusicID
     {
-        Background01,
-        Win,
-        Lose,
+        Song1, 
+        Song2, 
+        Song3,
+        Song4,
+        Song5,
+        Song6,
+        Song7,
+        Song8
     }
 }
